@@ -408,7 +408,7 @@ AppIntro.defaultProps = {
   defaultIndex: 0,
   showSkipButton: true,
   showDoneButton: true,
-  showDots: true
+  showDots: true,
   allowFontScaling: true,
   fontSize: 22
 };
