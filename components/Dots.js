@@ -1,37 +1,43 @@
 import React from 'react'
 import {
-  Text,
-  View
+  View,
+  TouchableOpacity
 } from 'react-native';
 
 export const Dot = ({
-  styles, dotColor, activeDotColor, active
+  styles,
+  dotColor,
+  activeDotColor,
+  active,
+  onPressDot,
+  index
 }) => {
-  if (active) {
-    return (
-      <View
-        style={[styles.dotStyle, styles.activeDotStyle, { 
-          backgroundColor: activeDotColor 
-        }]}
-      />
-    );
+  let style = [styles.dotStyle]
+  if ( active ) {
+    style = style.concat([styles.activeDotStyle, {backgroundColor: activeDotColor }])
   } else {
-    return (
-      <View 
-        style={[styles.dotStyle, { 
-          backgroundColor: dotColor
-        }]} />
-    );
+    style.push({ backgroundColor: dotColor })
   }
+
+  return (
+    <TouchableOpacity
+      onPress={ () => {
+        onPressDot({ index: index })
+      } }
+    >
+      <View style={style} />
+    </TouchableOpacity>
+  )
 }
 
 export const RenderDots = (index, total, props) => {
   let dots = [];
   for (let i = 0; i < total; i++) {
-    dots.push(React.createElement(Dot, { 
+    dots.push(React.createElement(Dot, {
       ...props,
       key: i,
-      active: i === index
+      active: i === index,
+      index: i
     }));
   }
   return dots;

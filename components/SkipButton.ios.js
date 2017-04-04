@@ -14,7 +14,7 @@ export const SkipButton = ({
   allowFontScaling, fontSize
 }) => {
   return (
-    <Animated.View style={[styles.btnContainer, {
+    <Animated.View style={[styles.btnContainer, styles.skipBtnContainer, {
       opacity: skipFadeOpacity,
       transform: [{
         translateX: skipFadeOpacity.interpolate({

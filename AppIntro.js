@@ -196,6 +196,10 @@ export default class AppIntro extends Component {
     };
   }
 
+  onPressDot = ({ index }) => {
+    this.setState({ index: index })
+  }
+
   renderPagination = (index, total, context) => {
     let isDoneBtnShow;
     let isSkipBtnShow;
@@ -225,7 +229,8 @@ export default class AppIntro extends Component {
         }
         {this.props.showDots && RenderDots(index, total, {
           ...this.props,
-          styles: this.styles
+          styles: this.styles,
+          onPressDot: this.onPressDot
         })}
         {this.props.showDoneButton ? <DoneButton
             {...this.props}
