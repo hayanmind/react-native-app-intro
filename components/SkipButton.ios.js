@@ -7,11 +7,15 @@ import {
 } from 'react-native';
 
 export const SkipButton = ({
-  styles, onSkipBtnClick, isSkipBtnShow,
+  styles,
+  onSkipBtnClick,
+  isSkipBtnShow,
   leftTextColor,
   skipBtnLabel,
   skipFadeOpacity,
-  allowFontScaling, fontSize
+  allowFontScaling,
+  fontSize,
+  skipButtonOutputRange
 }) => {
   return (
     <Animated.View style={[styles.btnContainer, styles.skipBtnContainer, {
@@ -19,13 +23,13 @@ export const SkipButton = ({
       transform: [{
         translateX: skipFadeOpacity.interpolate({
           inputRange: [0, 1],
-          outputRange: [0, 15],
+          outputRange: skipButtonOutputRange,
         }),
       }],
     }]}
     >
       <TouchableOpacity
-        style={styles.full}
+        style={[styles.full, styles.skipBtn]}
         onPress={isSkipBtnShow ? () => onSkipBtnClick() : null}>
         <Text allowFontScaling={allowFontScaling} style={[styles.controllText, { color: leftTextColor, fontSize }]}>
           {skipBtnLabel}

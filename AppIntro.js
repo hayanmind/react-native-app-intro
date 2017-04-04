@@ -427,5 +427,6 @@ AppIntro.defaultProps = {
   showDoneButton: true,
   showDots: true,
   allowFontScaling: true,
-  fontSize: 22
+  fontSize: 22,
+  skipButtonOutputRange: [0, 15]
 };
