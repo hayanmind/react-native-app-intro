@@ -18,8 +18,28 @@ export const DoneButton = ({
   skipFadeOpacity,
   nextOpacity,
   allowFontScaling,
-  fontSize
+  fontSize,
+  showNextButton,
 }) => {
+  let nextButton = null
+  if ( showNextButton ) {
+    nextButton = (
+      <Animated.View style={[styles.full, { height: 0 }, { opacity: nextOpacity }]}>
+        <TouchableOpacity
+          style={styles.full}
+          onPress={ onNextBtnClick}
+        >
+         <Text
+           allowFontScaling={allowFontScaling}
+           style={[styles.nextButtonText, { color: rightTextColor, fontSize }]}
+         >
+          {nextBtnLabel}
+        </Text>
+        </TouchableOpacity>
+      </Animated.View>
+    )
+  }
+
   return (
     <View style={styles.btnContainer}>
       <Animated.View
@@ -37,7 +57,10 @@ export const DoneButton = ({
           }
         ]}
       >
-        <TouchableOpacity style={styles.full}>
+        <TouchableOpacity
+          style={styles.full}
+          onPress={ onDoneBtnClick }
+        >
           <Text
             allowFontScaling={allowFontScaling}
             style={[
@@ -49,19 +72,7 @@ export const DoneButton = ({
           </Text>
         </TouchableOpacity>
       </Animated.View>
-      <Animated.View style={[styles.full, { height: 0 }, { opacity: nextOpacity }]}>
-        <TouchableOpacity
-          style={styles.full}
-          onPress={ isDoneBtnShow ? onDoneBtnClick : onNextBtnClick}
-        >
-         <Text
-           allowFontScaling={allowFontScaling}
-           style={[styles.nextButtonText, { color: rightTextColor, fontSize }]}
-         >
-          {nextBtnLabel}
-        </Text>
-        </TouchableOpacity>
-      </Animated.View>
+      {nextButton}
     </View>
   )
 }

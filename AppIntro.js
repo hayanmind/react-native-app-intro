@@ -114,8 +114,18 @@ export default class AppIntro extends Component {
       skipFadeOpacity: new Animated.Value(1),
       doneFadeOpacity: new Animated.Value(0),
       nextOpacity: new Animated.Value(1),
+      showNextButton: true,
       parallax: new Animated.Value(0),
+      index: props.defaultIndex
     };
+
+    this.state.nextOpacity.addListener( ({ value }) => {
+      if ( value === 0 && this.state.showNextButton ) {
+        this.setState({ showNextButton: false })
+      } else if ( value > 0 && !this.state.showNextButton ) {
+        this.setState({ showNextButton: true })
+      }
+    })
   }
 
   onNextBtnClick = (context) => {
@@ -189,6 +199,7 @@ export default class AppIntro extends Component {
   renderPagination = (index, total, context) => {
     let isDoneBtnShow;
     let isSkipBtnShow;
+
     if (index === total - 1) {
       this.setDoneBtnOpacity(1);
       this.setSkipBtnOpacity(0);
@@ -341,13 +352,14 @@ export default class AppIntro extends Component {
         {androidPages}
         <Swiper
           loop={false}
-          index={this.props.defaultIndex}
+          index={this.state.index}
           renderPagination={this.renderPagination}
           onMomentumScrollEnd={(e, state) => {
             if (this.isToTintStatusBar()) {
               StatusBar.setBackgroundColor(this.shadeStatusBarColor(this.props.pageArray[state.index].backgroundColor, -0.3), false);
             }
 
+            this.setState({ index: state.index })
             this.props.onSlideChange(state.index, state.total);
           }}
           onScroll={Animated.event(
