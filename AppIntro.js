@@ -79,14 +79,16 @@ const defaultStyles = {
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
+  dotsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
   dotContainer: {
-    flex: 0.6,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   btnContainer: {
-    flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
@@ -200,6 +202,22 @@ export default class AppIntro extends Component {
     this.setState({ index: index })
   }
 
+  renderDots(index, total) {
+    if (!this.props.showDots)
+      return null
+    return (
+      <View style={this.styles.dotsContainer}>
+        {
+          RenderDots(index, total, {
+            ...this.props,
+            styles: this.styles,
+            onPressDot: this.onPressDot
+          })
+        }
+      </View>
+    )
+  }
+
   renderPagination = (index, total, context) => {
     let isDoneBtnShow;
     let isSkipBtnShow;
@@ -218,7 +236,7 @@ export default class AppIntro extends Component {
       isSkipBtnShow = true;
     }
     return (
-      <View style={[this.styles.paginationContainer]}>
+      <View style={this.styles.paginationContainer}>
         {this.props.showSkipButton ? <SkipButton
           {...this.props}
           {...this.state}
@@ -227,11 +245,7 @@ export default class AppIntro extends Component {
           onSkipBtnClick={() => this.props.onSkipBtnClick(index)} /> :
           <View style={this.styles.btnContainer} />
         }
-        {this.props.showDots && RenderDots(index, total, {
-          ...this.props,
-          styles: this.styles,
-          onPressDot: this.onPressDot
-        })}
+        {this.renderDots(index, total)}
         {this.props.showDoneButton ? <DoneButton
             {...this.props}
             {...this.state}

@@ -22,7 +22,7 @@ export const Dot = ({
   return (
     <TouchableOpacity
       onPress={ () => {
-        onPressDot({ index: index })
+        onPressDot({ index })
       } }
     >
       <View style={style} />

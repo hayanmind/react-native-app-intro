@@ -31,7 +31,7 @@ export const DoneButton = ({
         >
          <Text
            allowFontScaling={allowFontScaling}
-           style={[styles.nextButtonText, { color: rightTextColor, fontSize }]}
+           style={[styles.nextButtonText, { color: rightTextColor }]}
          >
           {nextBtnLabel}
         </Text>
@@ -65,6 +65,7 @@ export const DoneButton = ({
             allowFontScaling={allowFontScaling}
             style={[
               styles.nextButtonText,
+              styles.doneButtonText,
               { color: rightTextColor, fontSize }
             ]}
           >

@@ -14,9 +14,12 @@ export const DoneButton = ({
   return (
     <View style={[styles.btnContainer, { height: 0, paddingBottom: 5 }]}>
       <TouchableOpacity style={styles.full}
-        onPress={ isDoneBtnShow ? onDoneBtnClick : onNextBtnClick}
+        onPress={ isDoneBtnShow ? onDoneBtnClick : onNextBtnClick }
       >
-       <Text allowFontScaling={allowFontScaling} style={[styles.nextButtonText, { color: rightTextColor, fontSize }]}>
+       <Text
+         allowFontScaling={allowFontScaling}
+         style={[styles.nextButtonText, isDoneBtnShow ? styles.doneButtonText : null, { color: rightTextColor, fontSize }]}
+        >
          {isDoneBtnShow ? doneBtnLabel : nextBtnLabel}
        </Text>
       </TouchableOpacity>
