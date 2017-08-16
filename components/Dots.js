@@ -10,7 +10,8 @@ export const Dot = ({
   activeDotColor,
   active,
   onPressDot,
-  index
+  index,
+  context
 }) => {
   let style = [styles.dotStyle]
   if ( active ) {
@@ -22,7 +23,7 @@ export const Dot = ({
   return (
     <TouchableOpacity
       onPress={ () => {
-        onPressDot({ index })
+        onPressDot({ index, context })
       } }
     >
       <View style={style} />
@@ -30,14 +31,15 @@ export const Dot = ({
   )
 }
 
-export const RenderDots = (index, total, props) => {
+export const RenderDots = (index, total, context, props) => {
   let dots = [];
   for (let i = 0; i < total; i++) {
     dots.push(React.createElement(Dot, {
       ...props,
       key: i,
       active: i === index,
-      index: i
+      index: i,
+      context: context
     }));
   }
   return dots;

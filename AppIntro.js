@@ -21,6 +21,9 @@ const windowsWidth = Dimensions.get('window').width;
 const windowsHeight = Dimensions.get('window').height;
 
 const defaultStyles = {
+  container: {
+    flex: 1
+  },
   header: {
     flex: 0.5,
     justifyContent: 'center',
@@ -136,7 +139,13 @@ export default class AppIntro extends Component {
       }
     })
 
+    this.bindFunctions()
+  }
+
+  bindFunctions() {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
+    this.onPageScroll = this.onPageScroll.bind(this)
+    this.onSkipBtnClick = this.onSkipBtnClick.bind(this)
   }
 
   onNextBtnClick = (context) => {
@@ -178,46 +187,64 @@ export default class AppIntro extends Component {
       { toValue: value },
     ).start();
   }
-  getTransform = (index, offset, level) => {
+
+  getTransform = (index, offset, level, calcTransformForOpacity = true) => {
     const isFirstPage = index === 0;
-    const statRange = isFirstPage ? 0 : windowsWidth * (index - 1);
-    const endRange = isFirstPage ? windowsWidth : windowsWidth * index;
-    const startOpacity = isFirstPage ? 1 : 0;
-    const endOpacity = isFirstPage ? 1 : 1;
+    const xStatRange = isFirstPage ? 0 : index - 1;
+    const xEndRange = isFirstPage ? 1 : index;
+
     const leftPosition = isFirstPage ? 0 : windowsWidth / 3;
     const rightPosition = isFirstPage ? -windowsWidth / 3 : 0;
-    const transform = [{
+
+    let transform = [{
       transform: [
         {
           translateX: this.state.parallax.interpolate({
-            inputRange: [statRange, endRange],
+            inputRange: [xStatRange, xEndRange],
             outputRange: [
               isFirstPage ? leftPosition : leftPosition - (offset * level),
               isFirstPage ? rightPosition + (offset * level) : rightPosition,
             ],
           }),
         }],
-    }, {
-      opacity: this.state.parallax.interpolate({
-        inputRange: [statRange, endRange], outputRange: [startOpacity, endOpacity],
-      }),
     }];
+
+    if ( calcTransformForOpacity === true ) {
+      const startOpacity = isFirstPage ? 1 : 0;
+      const endOpacity = 1;
+
+      transform.push({
+        opacity: this.state.parallax.interpolate({
+          inputRange: [index - 1, index, index + 1],
+          outputRange: [startOpacity, endOpacity, 0]
+        }),
+      })
+    }
+
     return {
       transform,
     };
   }
 
-  onPressDot = ({ index }) => {
+  onPressDot = ({ index, context }) => {
     this.setState({ index })
+    if ( Platform.OS === 'android' ) {
+      context.refs.scrollView.setPage(index);
+      context.onScrollEnd({
+        nativeEvent: {
+          position: index,
+        },
+      });
+    }
   }
 
-  renderDots(index, total) {
+  renderDots(index, total, context) {
     if (!this.props.showDots)
       return null
     return (
       <View style={this.styles.dotsContainer}>
         {
-          RenderDots(index, total, {
+          RenderDots(index, total, context, {
             ...this.props,
             styles: this.styles,
             onPressDot: this.onPressDot
@@ -225,6 +252,10 @@ export default class AppIntro extends Component {
         }
       </View>
     )
+  }
+
+  onSkipBtnClick() {
+    this.props.onSkipBtnClick(index)
   }
 
   renderPagination = (index, total, context) => {
@@ -251,10 +282,10 @@ export default class AppIntro extends Component {
           {...this.state}
           isSkipBtnShow={isSkipBtnShow}
           styles={this.styles}
-          onSkipBtnClick={() => this.props.onSkipBtnClick(index)} /> :
+          onSkipBtnClick={this.onSkipBtnClick} /> :
           <View style={this.styles.btnContainer} />
         }
-        {this.renderDots(index, total)}
+        {this.renderDots(index, total, context)}
         {this.props.showDoneButton ? <DoneButton
             {...this.props}
             {...this.state}
@@ -301,14 +332,14 @@ export default class AppIntro extends Component {
 
   renderChild = (children, pageIndex, index) => {
     const level = children.props.level || 0;
-    const { transform } = this.getTransform(pageIndex, 10, level);
     const root = children.props.children;
     let nodes = children;
     if (Array.isArray(root)) {
       nodes = root.map((node, i) => this.renderChild(node, pageIndex, `${index}_${i}`));
     }
-    let animatedChild = children;
+    let animatedChild = null;
     if (level !== 0) {
+      const { transform } = this.getTransform(pageIndex, 10, level);
       animatedChild = (
         <Animated.View
           key={index}
@@ -355,6 +386,10 @@ export default class AppIntro extends Component {
     this.props.onSlideChange(state.index, state.total);
   }
 
+  onPageScroll(e) {
+    this.state.parallax.setValue(e.nativeEvent.offset + e.nativeEvent.position)
+  }
+
   render() {
     const childrens = this.props.children;
     const { pageArray } = this.props;
@@ -366,9 +401,8 @@ export default class AppIntro extends Component {
       if (Platform.OS === 'ios') {
         pages = childrens.map((children, i) => this.renderChild(children, i, i));
       } else {
-        androidPages = childrens.map((children, i) => {
-          const { transform } = this.getTransform(i, -windowsWidth / 3 * 2, 1);
-          pages.push(<View key={i} />);
+        pages = childrens.map((children, i) => {
+          const { transform } = this.getTransform(i, windowsWidth * 1 / 3 , 1, false);
           return (
             <Animated.View
               key={i}
@@ -389,8 +423,7 @@ export default class AppIntro extends Component {
     }
 
     return (
-      <View>
-        {androidPages}
+      <View style={this.styles.container}>
         <Swiper
           loop={false}
           index={this.state.index}
@@ -399,6 +432,7 @@ export default class AppIntro extends Component {
           onScroll={Animated.event(
             [{ x: this.state.parallax }]
           )}
+          onPageScroll={this.onPageScroll}
         >
           {pages}
         </Swiper>

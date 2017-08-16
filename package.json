@@ -29,6 +29,6 @@
   "dependencies": {
     "assign-deep": "0.4.6",
     "prop-types": "15.5.10",
-    "react-native-swiper": "github:kesha-antonov/react-native-swiper"
+    "react-native-swiper": "github:kesha-antonov/react-native-swiper#update_index"
   }
 }
