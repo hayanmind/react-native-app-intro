@@ -105,6 +105,12 @@ const defaultStyles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  animatedPage: {
+    position: 'absolute',
+    height: windowsHeight,
+    width: windowsWidth,
+    top: 0,
+  }
 }
 
 export default class AppIntro extends Component {
@@ -129,6 +135,8 @@ export default class AppIntro extends Component {
         this.setState({ showNextButton: true })
       }
     })
+
+    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
   }
 
   onNextBtnClick = (context) => {
@@ -200,7 +208,7 @@ export default class AppIntro extends Component {
   }
 
   onPressDot = ({ index }) => {
-    this.setState({ index: index })
+    this.setState({ index })
   }
 
   renderDots(index, total) {
@@ -302,13 +310,19 @@ export default class AppIntro extends Component {
     let animatedChild = children;
     if (level !== 0) {
       animatedChild = (
-        <Animated.View key={index} style={[children.props.style, transform]}>
+        <Animated.View
+          key={index}
+          style={[children.props.style, transform]}
+        >
           {nodes}
         </Animated.View>
       );
     } else {
       animatedChild = (
-        <View key={index} style={children.props.style}>
+        <View
+          key={index}
+          style={children.props.style}
+        >
           {nodes}
         </View>
       );
@@ -332,6 +346,15 @@ export default class AppIntro extends Component {
     return this.props.pageArray && this.props.pageArray.length > 0 && Platform.OS === 'android'
   }
 
+  onMomentumScrollEnd(e, state) {
+    if (this.isToTintStatusBar()) {
+      StatusBar.setBackgroundColor(this.shadeStatusBarColor(this.props.pageArray[state.index].backgroundColor, -0.3), false);
+    }
+
+    this.setState({ index: state.index })
+    this.props.onSlideChange(state.index, state.total);
+  }
+
   render() {
     const childrens = this.props.children;
     const { pageArray } = this.props;
@@ -347,14 +370,12 @@ export default class AppIntro extends Component {
           const { transform } = this.getTransform(i, -windowsWidth / 3 * 2, 1);
           pages.push(<View key={i} />);
           return (
-            <Animated.View key={i} style={[{
-              position: 'absolute',
-              height: windowsHeight,
-              width: windowsWidth,
-              top: 0,
-            }, {
-              ...transform[0],
-            }]}
+            <Animated.View
+              key={i}
+              style={[
+                this.styles.animatedPage,
+                { ...transform[0] }
+              ]}
             >
               {this.renderChild(children, i, i)}
             </Animated.View>
@@ -374,14 +395,7 @@ export default class AppIntro extends Component {
           loop={false}
           index={this.state.index}
           renderPagination={this.renderPagination}
-          onMomentumScrollEnd={(e, state) => {
-            if (this.isToTintStatusBar()) {
-              StatusBar.setBackgroundColor(this.shadeStatusBarColor(this.props.pageArray[state.index].backgroundColor, -0.3), false);
-            }
-
-            this.setState({ index: state.index })
-            this.props.onSlideChange(state.index, state.total);
-          }}
+          onMomentumScrollEnd={this.onMomentumScrollEnd}
           onScroll={Animated.event(
             [{ x: this.state.parallax }]
           )}
