@@ -255,7 +255,8 @@ export default class AppIntro extends Component {
   }
 
   onSkipBtnClick() {
-    this.props.onSkipBtnClick(index)
+    if ( this.props.onSkipBtnClick )
+      this.props.onSkipBtnClick(this.state.index)
   }
 
   renderPagination = (index, total, context) => {
