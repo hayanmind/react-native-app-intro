@@ -146,12 +146,15 @@ export default class AppIntro extends Component {
     this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
     this.onPageScroll = this.onPageScroll.bind(this)
     this.onSkipBtnClick = this.onSkipBtnClick.bind(this)
+    this.onScroll = this.onScroll.bind(this)
   }
 
-  onNextBtnClick = (context) => {
+  scrollToIndex(context, index = null) {
     if (context.state.isScrolling || context.state.total < 2) return;
     const state = context.state;
-    const diff = (context.props.loop ? 1 : 0) + 1 + context.state.index;
+    if ( index == null )
+      index = 1 + context.state.index
+    const diff = (context.props.loop ? 1 : 0) + index;
     let x = 0;
     if (state.dir === 'x') x = diff * state.width;
     if (Platform.OS === 'ios') {
@@ -164,6 +167,10 @@ export default class AppIntro extends Component {
         },
       });
     }
+  }
+
+  onNextBtnClick = (context) => {
+    this.scrollToIndex(context);
     this.props.onNextBtnClick(context.state.index);
   }
 
@@ -227,15 +234,9 @@ export default class AppIntro extends Component {
   }
 
   onPressDot = ({ index, context }) => {
-    this.setState({ index })
-    if ( Platform.OS === 'android' ) {
-      context.refs.scrollView.setPage(index);
-      context.onScrollEnd({
-        nativeEvent: {
-          position: index,
-        },
-      });
-    }
+    if ( Platform.OS === 'android' )
+      this.setState({ index });
+    this.scrollToIndex(context, index);
   }
 
   renderDots(index, total, context) {
@@ -382,13 +383,22 @@ export default class AppIntro extends Component {
     if (this.isToTintStatusBar()) {
       StatusBar.setBackgroundColor(this.shadeStatusBarColor(this.props.pageArray[state.index].backgroundColor, -0.3), false);
     }
-
     this.setState({ index: state.index })
     this.props.onSlideChange(state.index, state.total);
   }
 
   onPageScroll(e) {
     this.state.parallax.setValue(e.nativeEvent.offset + e.nativeEvent.position)
+  }
+
+  onScroll(e) {
+    let x = null
+    if ( Platform.OS === 'ios' )
+      x = e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width
+    else
+      x = e.nativeEvent.x
+
+    this.state.parallax.setValue(x)
   }
 
   render() {
@@ -430,10 +440,9 @@ export default class AppIntro extends Component {
           index={this.state.index}
           renderPagination={this.renderPagination}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
-          onScroll={Animated.event(
-            [{ x: this.state.parallax }]
-          )}
+          onScroll={this.onScroll}
           onPageScroll={this.onPageScroll}
+          scrollEventThrottle={16}
         >
           {pages}
         </Swiper>
