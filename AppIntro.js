@@ -154,6 +154,8 @@ export default class AppIntro extends Component {
     const state = context.state;
     if ( index == null )
       index = 1 + context.state.index
+    if ( index > context.state.total - 1 )
+      return
     const diff = (context.props.loop ? 1 : 0) + index;
     let x = 0;
     if (state.dir === 'x') x = diff * state.width;
