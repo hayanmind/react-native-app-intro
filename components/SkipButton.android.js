@@ -2,15 +2,13 @@ import React from 'react'
 import {
   Text,
   View,
-  TouchableOpacity,
-  Animated
+  TouchableOpacity
 } from 'react-native';
 
 export const SkipButton = ({
   styles, onSkipBtnClick, isSkipBtnShow,
   leftTextColor,
   skipBtnLabel,
-  skipFadeOpacity,
   allowFontScaling,
   fontSize
 }) => {

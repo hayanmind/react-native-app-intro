@@ -3,6 +3,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  StyleSheet
 } from 'react-native';
 
 export const DoneButton = ({
@@ -11,14 +12,20 @@ export const DoneButton = ({
   doneBtnLabel, nextBtnLabel,
   allowFontScaling, fontSize
 }) => {
+  let styleText = [styles.nextButtonText]
+  if ( isDoneBtnShow ) {
+    styleText = styleText.concat([ styles.doneButtonText, { fontSize: fontSize } ])
+  }
+  styleText.push({ color: rightTextColor })
+
   return (
-    <View style={[styles.btnContainer, { height: 0, paddingBottom: 5 }]}>
+    <View style={[styles.btnContainer, customStyles.btnContainer]}>
       <TouchableOpacity style={styles.full}
         onPress={ isDoneBtnShow ? onDoneBtnClick : onNextBtnClick }
       >
        <Text
          allowFontScaling={allowFontScaling}
-         style={[styles.nextButtonText, isDoneBtnShow ? styles.doneButtonText : null, { color: rightTextColor, fontSize }]}
+         style={styleText}
         >
          {isDoneBtnShow ? doneBtnLabel : nextBtnLabel}
        </Text>
@@ -26,5 +33,12 @@ export const DoneButton = ({
     </View>
   )
 }
+
+const customStyles = StyleSheet.create({
+  btnContainer: {
+    height: 0,
+    paddingBottom: 5
+  }
+})
 
 export default DoneButton

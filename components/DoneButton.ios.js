@@ -3,15 +3,18 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Animated
+  Animated,
+  StyleSheet
 } from 'react-native';
+
+const SKIP_FADE_OPACITY_INPUT_RANGE = [0, 1];
+const SKIP_FADE_OPACITY_OUTPUT_RANGE = [0, 20];
 
 export const DoneButton = ({
   styles,
   onDoneBtnClick,
   onNextBtnClick,
   rightTextColor,
-  isDoneBtnShow,
   doneBtnLabel,
   nextBtnLabel,
   doneFadeOpacity,
@@ -24,7 +27,7 @@ export const DoneButton = ({
   let nextButton = null
   if ( showNextButton ) {
     nextButton = (
-      <Animated.View style={[styles.full, { height: 0 }, { opacity: nextOpacity }]}>
+      <Animated.View style={[styles.full, customStyles.full, { opacity: nextOpacity }]}>
         <TouchableOpacity
           style={styles.full}
           onPress={ onNextBtnClick}
@@ -45,13 +48,13 @@ export const DoneButton = ({
       <Animated.View
         style={[
           styles.full,
-          { height: 0 },
+          customStyles.full,
           {
             opacity: doneFadeOpacity,
             transform: [{
               translateX: skipFadeOpacity.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 20],
+                inputRange: SKIP_FADE_OPACITY_INPUT_RANGE,
+                outputRange: SKIP_FADE_OPACITY_OUTPUT_RANGE,
               }),
             }],
           }
@@ -77,5 +80,11 @@ export const DoneButton = ({
     </View>
   )
 }
+
+const customStyles = StyleSheet.create({
+  full: {
+    height: 0
+  }
+})
 
 export default DoneButton

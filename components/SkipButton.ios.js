@@ -6,6 +6,8 @@ import {
   Animated
 } from 'react-native';
 
+const SKIP_BUTTON_INPUT_RANGE = [0, 1];
+
 export const SkipButton = ({
   styles,
   onSkipBtnClick,
@@ -22,7 +24,7 @@ export const SkipButton = ({
       opacity: skipFadeOpacity,
       transform: [{
         translateX: skipFadeOpacity.interpolate({
-          inputRange: [0, 1],
+          inputRange: SKIP_BUTTON_INPUT_RANGE,
           outputRange: skipButtonOutputRange,
         }),
       }],

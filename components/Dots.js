@@ -15,7 +15,7 @@ export const Dot = ({
 }) => {
   let style = [styles.dotStyle]
   if ( active ) {
-    style = style.concat([styles.activeDotStyle, {backgroundColor: activeDotColor }])
+    style = style.concat([styles.activeDotStyle, { backgroundColor: activeDotColor }])
   } else {
     style.push({ backgroundColor: dotColor })
   }

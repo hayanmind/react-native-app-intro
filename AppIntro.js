@@ -1,12 +1,11 @@
 import assign from 'assign-deep';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   StatusBar,
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Animated,
   Dimensions,
   Image,
@@ -20,6 +19,9 @@ import RenderDots from './components/Dots';
 const windowsWidth = Dimensions.get('window').width;
 const windowsHeight = Dimensions.get('window').height;
 
+const IS_ANDROID = Platform.OS === 'android';
+const IS_IOS = Platform.OS === 'ios';
+
 const defaultStyles = {
   container: {
     flex: 1
@@ -28,10 +30,6 @@ const defaultStyles = {
     flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  pic: {
-    width: 150,
-    height: 150,
   },
   info: {
     flex: 0.5,
@@ -87,11 +85,6 @@ const defaultStyles = {
     flexDirection: 'row',
     justifyContent: 'center'
   },
-  dotContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   btnContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -116,7 +109,7 @@ const defaultStyles = {
   }
 }
 
-export default class AppIntro extends Component {
+export default class AppIntro extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -159,7 +152,7 @@ export default class AppIntro extends Component {
     const diff = (context.props.loop ? 1 : 0) + index;
     let x = 0;
     if (state.dir === 'x') x = diff * state.width;
-    if (Platform.OS === 'ios') {
+    if (IS_IOS) {
       context.refs.scrollView.scrollTo({ y: 0, x });
     } else {
       context.refs.scrollView.setPage(diff);
@@ -179,21 +172,21 @@ export default class AppIntro extends Component {
   setDoneBtnOpacity = (value) => {
     Animated.timing(
       this.state.doneFadeOpacity,
-      { toValue: value },
+      { toValue: value, useNativeDriver: true },
     ).start();
   }
 
   setSkipBtnOpacity = (value) => {
     Animated.timing(
       this.state.skipFadeOpacity,
-      { toValue: value },
+      { toValue: value, useNativeDriver: true },
     ).start();
   }
 
   setNextOpacity = (value) => {
     Animated.timing(
       this.state.nextOpacity,
-      { toValue: value },
+      { toValue: value, useNativeDriver: true },
     ).start();
   }
 
@@ -236,7 +229,7 @@ export default class AppIntro extends Component {
   }
 
   onPressDot = ({ index, context }) => {
-    if ( Platform.OS === 'android' )
+    if ( IS_ANDROID )
       this.setState({ index });
     this.scrollToIndex(context, index);
   }
@@ -378,7 +371,7 @@ export default class AppIntro extends Component {
   }
 
   isToTintStatusBar() {
-    return this.props.pageArray && this.props.pageArray.length > 0 && Platform.OS === 'android'
+    return this.props.pageArray && this.props.pageArray.length > 0 && IS_ANDROID
   }
 
   onMomentumScrollEnd(e, state) {
@@ -395,7 +388,7 @@ export default class AppIntro extends Component {
 
   onScroll(e) {
     let x = null
-    if ( Platform.OS === 'ios' )
+    if ( IS_IOS )
       x = e.nativeEvent.contentOffset.x / e.nativeEvent.layoutMeasurement.width
     else
       x = e.nativeEvent.x
@@ -411,7 +404,7 @@ export default class AppIntro extends Component {
     if (pageArray.length > 0) {
       pages = pageArray.map((page, i) => this.renderBasicSlidePage(i, page));
     } else {
-      if (Platform.OS === 'ios') {
+      if (IS_IOS) {
         pages = childrens.map((children, i) => this.renderChild(children, i, i));
       } else {
         pages = childrens.map((children, i) => {
