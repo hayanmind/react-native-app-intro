@@ -153,9 +153,9 @@ export default class AppIntro extends PureComponent {
     let x = 0;
     if (state.dir === 'x') x = diff * state.width;
     if (IS_IOS) {
-      context.refs.scrollView.scrollTo({ y: 0, x });
+      context.scrollView.scrollTo({ y: 0, x });
     } else {
-      context.refs.scrollView.setPage(diff);
+      context.scrollView.setPage(diff);
       context.onScrollEnd({
         nativeEvent: {
           position: diff,
@@ -172,21 +172,21 @@ export default class AppIntro extends PureComponent {
   setDoneBtnOpacity = (value) => {
     Animated.timing(
       this.state.doneFadeOpacity,
-      { toValue: value, useNativeDriver: true },
+      { toValue: value },
     ).start();
   }
 
   setSkipBtnOpacity = (value) => {
     Animated.timing(
       this.state.skipFadeOpacity,
-      { toValue: value, useNativeDriver: true },
+      { toValue: value },
     ).start();
   }
 
   setNextOpacity = (value) => {
     Animated.timing(
       this.state.nextOpacity,
-      { toValue: value, useNativeDriver: true },
+      { toValue: value },
     ).start();
   }
 
