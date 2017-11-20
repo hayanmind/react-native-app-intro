@@ -33,7 +33,7 @@ export const SkipButton = ({
       <TouchableOpacity
         style={[styles.full, styles.skipBtn]}
         onPress={isSkipBtnShow ? () => onSkipBtnClick() : null}>
-        <Text allowFontScaling={allowFontScaling} style={[styles.controllText, { color: leftTextColor, fontSize }]}>
+        <Text allowFontScaling={allowFontScaling} style={[styles.controlText, { color: leftTextColor, fontSize }]}>
           {skipBtnLabel}
         </Text>
       </TouchableOpacity>

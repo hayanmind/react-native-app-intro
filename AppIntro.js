@@ -26,23 +26,26 @@ const defaultStyles = {
   container: {
     flex: 1
   },
-  controllText: {
+  controlText: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   dotStyle: {
-    backgroundColor: 'rgba(255,255,255,.3)',
-    width: 13,
-    height: 13,
-    borderRadius: 7,
-    marginLeft: 7,
-    marginRight: 7,
-    marginTop: 7,
-    marginBottom: 7,
+    backgroundColor: 'white',
+    borderColor: '#c6c6c6',
+    borderWidth: 2,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 5,
+    marginBottom: 5,
   },
   activeDotStyle: {
-    backgroundColor: '#fff',
+    backgroundColor: '#757575',
+    borderWidth: 0,
   },
   paginationContainer: {
     position: 'absolute',
@@ -63,6 +66,7 @@ const defaultStyles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: 50,
+    marginRight: 15,
   },
   nextButtonText: {
     fontSize: 25,
